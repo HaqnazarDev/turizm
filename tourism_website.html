@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jahon Turizmi - 3D Sarguzashtlar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: #0a0e27;
+            color: #fff;
+        }
+
+        /* ===== NAVBAR ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 50px;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 150, 255, 0.2);
+            border-bottom: 2px solid rgba(0, 150, 255, 0.3);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 150, 255, 0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.8)); }
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00d4ff, #0099ff);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(0, 20, 60, 0.9), rgba(0, 60, 120, 0.8));
+            position: relative;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.2), transparent),
+                        radial-gradient(circle at 80% 80%, rgba(0, 150, 255, 0.2), transparent);
+            animation: bgShift 20s ease-in-out infinite;
+        }
+
+        @keyframes bgShift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(50px, -50px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            perspective: 1200px;
+        }
+
+        .hero h1 {
+            font-size: 80px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #00d4ff, #0099ff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            animation: titleFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(0, 150, 255, 0.4));
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0px) rotateX(0deg); }
+            50% { transform: translateY(-20px) rotateX(2deg); }
+        }
+
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: #b0d4ff;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border-color: #00d4ff;
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.4);
+            filter: brightness(1.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== 3D CUBE ANIMATION ===== */
+        .cube-container {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            right: 10%;
+            top: 50%;
+            transform: translateY(-50%);
+            perspective: 1000px;
+        }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 20s infinite linear;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(0, 150, 255, 0.2);
+            border: 2px solid rgba(0, 212, 255, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+        }
+
+        .cube-face:nth-child(1) { transform: translateZ(150px); }
+        .cube-face:nth-child(2) { transform: rotateY(180deg) translateZ(150px); }
+        .cube-face:nth-child(3) { transform: rotateY(90deg) translateZ(150px); }
+        .cube-face:nth-child(4) { transform: rotateY(-90deg) translateZ(150px); }
+        .cube-face:nth-child(5) { transform: rotateX(90deg) translateZ(150px); }
+        .cube-face:nth-child(6) { transform: rotateX(-90deg) translateZ(150px); }
+
+        @keyframes rotateCube {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        /* ===== DESTINATIONS SECTION ===== */
+        .destinations {
+            min-height: 100vh;
+            padding: 100px 50px;
+            background: linear-gradient(135deg, rgba(0, 20, 60, 0.9), rgba(0, 40, 100, 0.8));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .destinations::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(0, 212, 255, 0.1), transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 150, 255, 0.1), transparent 50%);
+            animation: moveGradient 30s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes moveGradient {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(100px, 100px); }
+        }
+
+        .section-title {
+            font-size: 60px;
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+            z-index: 10;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .destination-card {
+            background: rgba(0, 50, 100, 0.4);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s;
+            backdrop-filter: blur(10px);
+            position: relative;
+            height: 400px;
+        }
+
+        .destination-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 150, 255, 0.05));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1;
+        }
+
+        .destination-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .destination-card:hover {
+            transform: translateY(-30px) rotateX(5deg);
+            border-color: rgba(0, 212, 255, 0.8);
+            box-shadow: 0 40px 80px rgba(0, 150, 255, 0.3);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(0, 100, 200, 0.4), rgba(0, 150, 255, 0.2));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 80px;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .card-image::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.3), transparent);
+            animation: shine 3s ease-in-out infinite;
+        }
+
+        @keyframes shine {
+            0%, 100% { transform: translate(-50%, -50%); }
+            50% { transform: translate(50%, 50%); }
+        }
+
+        .card-content {
+            padding: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-content h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #00d4ff;
+        }
+
+        .card-content p {
+            font-size: 14px;
+            color: #b0d4ff;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-stats {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #7a9dd4;
+            margin-top: 5px;
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .features {
+            min-height: 100vh;
+            padding: 100px 50px;
+            background: linear-gradient(135deg, rgba(0, 40, 100, 0.8), rgba(0, 20, 60, 0.9));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .feature-box {
+            background: rgba(0, 50, 100, 0.4);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature-box:hover::before {
+            opacity: 1;
+            animation: pulse-glow 1s ease-out;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        .feature-box:hover {
+            transform: translateY(-20px) scale(1.05);
+            border-color: #00d4ff;
+            box-shadow: 0 30px 60px rgba(0, 150, 255, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(0, 150, 255, 0.4));
+        }
+
+        .feature-box h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #00d4ff;
+            position: relative;
+            z-index: 10;
+        }
+
+        .feature-box p {
+            color: #b0d4ff;
+            font-size: 14px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ===== STATS SECTION ===== */
+        .stats {
+            min-height: 50vh;
+            padding: 80px 50px;
+            background: linear-gradient(90deg, rgba(0, 50, 100, 0.5), rgba(0, 100, 200, 0.3));
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 50, 100, 0.3);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            transition: all 0.4s;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-15px);
+            border-color: #00d4ff;
+            box-shadow: 0 20px 40px rgba(0, 150, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 50px;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .stat-text {
+            color: #b0d4ff;
+            font-size: 16px;
+        }
+
+        /* ===== CONTACT SECTION ===== */
+        .contact {
+            min-height: 100vh;
+            padding: 100px 50px;
+            background: linear-gradient(135deg, rgba(0, 20, 60, 0.9), rgba(0, 40, 100, 0.8));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(0, 50, 100, 0.4);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 60px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .contact-container h2 {
+            font-size: 40px;
+            margin-bottom: 30px;
+            color: #00d4ff;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 50, 150, 0.2);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            background: rgba(0, 50, 150, 0.4);
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.3);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 150, 255, 0.4);
+            filter: brightness(1.1);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: rgba(0, 10, 30, 0.9);
+            padding: 40px 50px;
+            text-align: center;
+            border-top: 2px solid rgba(0, 212, 255, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        footer p {
+            color: #7a9dd4;
+            font-size: 14px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 20px;
+                height: 70px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            nav ul {
+                gap: 20px;
+            }
+
+            nav a {
+                font-size: 14px;
+            }
+
+            .hero {
+                margin-top: 70px;
+            }
+
+            .hero h1 {
+                font-size: 40px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .cube-container {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 40px;
+                margin-bottom: 50px;
+            }
+
+            .destinations,
+            .features,
+            .contact {
+                padding: 60px 20px;
+            }
+
+            .contact-container {
+                padding: 40px 20px;
+            }
+
+            .destinations-grid,
+            .features-grid {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="logo">🌍 TURIZM</div>
+        <ul>
+            <li><a onclick="scrollToSection('destinations')">Sayohatlar</a></li>
+            <li><a onclick="scrollToSection('features')">Xizmatlar</a></li>
+            <li><a onclick="scrollToSection('contact')">Bog'lanish</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Jahonni Kashf Et</h1>
+            <p>Eng ajoyib sayohatlar va sarguzashtlar sizni kutmoqda</p>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="scrollToSection('destinations')">Boshla</button>
+                <button class="btn btn-secondary" onclick="scrollToSection('contact')">Murojaat</button>
+            </div>
+        </div>
+
+        <div class="cube-container">
+            <div class="cube">
+                <div class="cube-face">🗺️</div>
+                <div class="cube-face">✈️</div>
+                <div class="cube-face">🏖️</div>
+                <div class="cube-face">🏔️</div>
+                <div class="cube-face">🌴</div>
+                <div class="cube-face">🎒</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DESTINATIONS SECTION -->
+    <section class="destinations" id="destinations">
+        <h2 class="section-title">Mashhuр Sayohatlar</h2>
+        <div class="destinations-grid">
+            <!-- Card 1 -->
+            <div class="destination-card">
+                <div class="card-image">🏖️</div>
+                <div class="card-content">
+                    <h3>Tropik Paradiz</h3>
+                    <p>Oq qumli plyajlar va ko'k okeanlar bilan to'la ajoyib joy.</p>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">4.8★</div>
+                            <div class="stat-label">Reyting</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2500+</div>
+                            <div class="stat-label">Mehmon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="destination-card">
+                <div class="card-image">🏔️</div>
+                <div class="card-content">
+                    <h3>Tog'li Serhuddlar</h3>
+                    <p>Baland cho'qqilari va ko'kalammas manzaralar bilan sayohat.</p>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">4.7★</div>
+                            <div class="stat-label">Reyting</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">1800+</div>
+                            <div class="stat-label">Mehmon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="destination-card">
+                <div class="card-image">🏛️</div>
+                <div class="card-content">
+                    <h3>Tarixiy Shaharlar</h3>
+                    <p>Qadimiy madaniyat va merosdan to'la shaharlarni aniqlang.</p>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">4.9★</div>
+                            <div class="stat-label">Reyting</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">3200+</div>
+                            <div class="stat-label">Mehmon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="destination-card">
+                <div class="card-image">🌳</div>
+                <div class="card-content">
+                    <h3>Tabiat Ta'tili</h3>
+                    <p>Yashil o'rmonlar va vazifasi tabiy ajubalarni shu yerda.</p>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">4.6★</div>
+                            <div class="stat-label">Reyting</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">1500+</div>
+                            <div class="stat-label">Mehmon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="destination-card">
+                <div class="card-image">🌃</div>
+                <div class="card-content">
+                    <h3>Shahar Hayoti</h3>
+                    <p>Zamonaviy shaharlarning yorqin chiroylari va kultura.</p>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">4.8★</div>
+                            <div class="stat-label">Reyting</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2100+</div>
+                            <div class="stat-label">Mehmon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="destination-card">
+                <div class="card-image">❄️</div>
+                <div class="card-content">
+                    <h3>Qirg'oq Mamlakatlari</h3>
+                    <p>Qorli tog'lar va qorli sarguzashtlar kuzatib ko'ring.</p>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">4.7★</div>
+                            <div class="stat-label">Reyting</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">1900+</div>
+                            <div class="stat-label">Mehmon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section class="features" id="features">
+        <h2 class="section-title">Bizning Xizmatlar</h2>
+        <div class="features-grid">
+            <div class="feature-box">
+                <div class="feature-icon">🎫</div>
+                <h3>Chiptalar</h3>
+                <p>Eng arzon chiptalar va tez bron qilish imkoniyati.</p>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon">🏨</div>
+                <h3>Mehmonxonalar</h3>
+                <p>5 yulduzli mehmonxonalar va qulay turar joylar.</p>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon">🚗</div>
+                <h3>Transport</h3>
+                <p>Ishonchli avtomobil ijarasi va marshrutlar.</p>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon">🍽️</div>
+                <h3>Taomlar</h3>
+                <p>Mahalliy va xalqaro oshpazligining eng yaxshi taomlar.</p>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon">👨‍🏫</div>
+                <h3>Gidlar</h3>
+                <p>Tajribali va professional ekskursiya gidlari.</p>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon">🛡️</div>
+                <h3>Sug'urta</h3>
+                <p>To'liq sayohat sug'urtasi va xavfsizlik kafolatlari.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats">
+        <div class="stat-item">
+            <div class="stat-number">50+</div>
+            <div class="stat-text">Sayohat Joylari</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">25000+</div>
+            <div class="stat-text">Baxtli Sayohatchllar</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">15 Yil</div>
+            <div class="stat-text">Tajriba</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">98%</div>
+            <div class="stat-text">Reyzing Kasbi</div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="contact" id="contact">
+        <div class="contact-container">
+            <h2>Biz Bilan Bog'lanish</h2>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Ismingiz</label>
+                    <input type="text" id="name" placeholder="Ismingizni kiriting" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Email manzilingiz" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Telefon Raqami</label>
+                    <input type="tel" id="phone" placeholder="+998 90 123 45 67" required>
+                </div>
+                <div class="form-group">
+                    <label for="destination">Sayohat Turi</label>
+                    <input type="text" id="destination" placeholder="Qayerga ketmoqchi ekansiz?" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Sizning Xabar</label>
+                    <textarea id="message" placeholder="Burada o'z mulohazalaringizni yozing..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Jo'nating</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Jahon Turizmi. Barcha huquqlar himoyalangan. | Eng Yaxshi Sayohat Tajribasi</p>
+    </footer>
+
+    <script>
+        // Smooth scroll to section
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Counter animation for stats
+        function animateCounter() {
+            const statItems = document.querySelectorAll('.stat-number');
+            
+            const observerOptions = {
+                threshold: 0.5
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                        const target = entry.target;
+                        let finalValue = target.textContent;
+                        let numValue = parseInt(finalValue);
+                        let isPercentage = finalValue.includes('%');
+                        let isYear = finalValue.includes('Yil');
+
+                        if (isPercentage) {
+                            numValue = parseInt(finalValue);
+                        } else if (isYear) {
+                            numValue = 15;
+                        } else if (finalValue.includes('+')) {
+                            numValue = parseInt(finalValue.replace('+', ''));
+                        }
+
+                        let current = 0;
+                        const increment = numValue / 50;
+
+                        const counter = setInterval(() => {
+                            current += increment;
+                            if (current >= numValue) {
+                                current = numValue;
+                                clearInterval(counter);
+                            }
+                            
+                            if (isPercentage) {
+                                target.textContent = Math.floor(current) + '%';
+                            } else if (isYear) {
+                                target.textContent = Math.floor(current) + ' Yil';
+                            } else if (finalValue.includes('+')) {
+                                target.textContent = Math.floor(current) + '+';
+                            }
+                        }, 30);
+
+                        target.classList.add('animated');
+                    }
+                });
+            }, observerOptions);
+
+            statItems.forEach(item => observer.observe(item));
+        }
+
+        // Form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const destination = document.getElementById('destination').value;
+            const message = document.getElementById('message').value;
+
+            // Simple validation
+            if (name && email && phone && destination && message) {
+                // Simulate sending
+                alert(`Rahmat ${name}! Sizning so'rovingiz qabul qilindi. Tez orada bog'lanamiz!`);
+                document.getElementById('contactForm').reset();
+            }
+        });
+
+        // Parallax effect on scroll
+        window.addEventListener('scroll', function() {
+            const scrollPosition = window.scrollY;
+            const cube = document.querySelector('.cube');
+            
+            if (cube) {
+                cube.style.transform = `rotateX(${scrollPosition * 0.5}deg) rotateY(${scrollPosition * 0.5}deg)`;
+            }
+        });
+
+        // Initialize counter animation
+        animateCounter();
+
+        // Smooth scroll behavior for navigation
+        document.querySelectorAll('a[onclick]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
